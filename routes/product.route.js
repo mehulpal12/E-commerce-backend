@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.route("/")
-  .get(getProducts)
+  .post(getProducts)
   .post(createProduct);
 
 router.route("/:id")

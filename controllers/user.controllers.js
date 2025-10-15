@@ -4,7 +4,7 @@ import { User } from "../models/user.model.js"
 
 const registerUser = asyncHandler(async (req,res)  =>{
     const { fullName , userName, email, password,isLoggedIn } = req.body;
-    // console.log({fullName,userName,email,password});
+    console.log({fullName,userName,email,password});
 
      if (
     [fullName, userName, email, password].some((field) => field?.trim() === "")

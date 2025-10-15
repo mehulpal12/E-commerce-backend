@@ -33,9 +33,35 @@ app.use("/user/login", loginUser)
 app.use("/user/logout", logoutUser)
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, ()=>{
-    console.log("server is run on " + PORT);
+// app.listen(PORT, ()=>{
+//     console.log("server is run on " + PORT);
     
-})
- const db = mongoose.connect(process.env.MONGO_URI)
-console.log(`db connected`+ process.env.MONGO_URI);
+// })
+//  const db = mongoose.connect(process.env.MONGO_URI)
+// console.log(`db connected`+ process.env.MONGO_URI);
+
+let isConnected = false;
+async function connectDB() {
+
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    isConnected = true;
+    console.log("MongoDB connected");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+  }
+
+}
+
+app.use((req, res, next) => {
+  if (!isConnected) {
+    connectDB().then(() => next());
+  } else {
+    next();
+  }
+});
+
+export default app

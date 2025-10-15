@@ -46,7 +46,7 @@ app.get("/test", async (req, res) => {
     await connectDB(); // ensure DB is connected
     res.status(200).json({ message: "DB is connected" });
   } catch (err) {
-    res.status(500).json({ error: "DB connection failed" });
+    res.status(500).json({ error: err.message });
   }
 });
 

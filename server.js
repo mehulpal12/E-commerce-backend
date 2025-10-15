@@ -49,5 +49,12 @@ app.get("/test", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'; font-src 'self' https://e-commerce-backend-psi-three.vercel.app; style-src 'self' 'unsafe-inline'; script-src 'self'");
+  next();
+});
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 export default app;

@@ -14,7 +14,7 @@ import  getImages  from "./api/get-images.js";
 const app = express()
 app.use(express.json({ limit: "10mb" }))
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://e-commerce-frontend-five-ruby.vercel.app/",
   credentials: true,
 }))
 app.use(express.urlencoded({ extended: true }));

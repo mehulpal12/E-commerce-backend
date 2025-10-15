@@ -1,0 +1,32 @@
+{
+  "name": "ecomm",
+  "version": "1.0.0",
+  "description": "Backend API for ecomm App with user authentication, CRUD operations, and Stripe payment integration.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "nodemon server.js",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "author": "mehul pal",
+  "license": "MIT",
+  "dependencies": {
+    "@stripe/stripe-js": "^8.0.0",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.7.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.545.0",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.19.1",
+    "multer": "^2.0.2",
+    "stripe": "^19.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

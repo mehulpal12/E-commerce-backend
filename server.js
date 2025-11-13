@@ -15,7 +15,7 @@ import { connectDB } from "./db.js";
 const app = express()
 app.use(express.json({ limit: "10mb" }))
 app.use(cors({
-  origin: "https://e-commerce-frontend-five-ruby.vercel.app",
+  origin: "https://e-commerce-frontend-3k5r4n5mt-mehulpal12s-projects.vercel.app",
   credentials: true,
     methods: ['GET','POST','PUT','DELETE'],
 }))

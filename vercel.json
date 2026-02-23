@@ -1,14 +1,5 @@
 {
   "version": 2,
   "builds": [{ "src": "server.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "server.js" }],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://e-commerce-frontend-p693bv72h-mehulpal12s-projects.vercel.app" }
-      ]
-    }
-  ]
+  "routes": [{ "src": "/(.*)", "dest": "server.js" }]
 }
-

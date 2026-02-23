@@ -23,7 +23,7 @@ const corsOptions = {
     credentials: true,
   },
   production: {
-    origin: "https://e-commerce-frontend-p693bv72h-mehulpal12s-projects.vercel.app",
+    origin: /\.vercel\.app$/,
     credentials: true,
   },
 };

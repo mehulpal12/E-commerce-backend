@@ -1,8 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { User } from "../models/user.model.js"
+import jwt from "jsonwebtoken";
 
 
-const registerUser = asyncHandler(async (req,res)  =>{
+const 
+registerUser = asyncHandler(async (req,res)  =>{
     const { fullName , userName, email, password,isLoggedIn } = req.body;
     console.log({fullName,userName,email,password});
 
@@ -32,7 +34,10 @@ const registerUser = asyncHandler(async (req,res)  =>{
   if (!createdUser) {
     throw new ApiError("User creation failed, please try again", 500);
   }
-  return res.status(201).json({ message:"user created done" , user:user})
+  const loggedInUser = await User.findById(user._id);
+  console.log(loggedInUser.isLoggedIn);
+  const token = loggedInUser.generateAccessToken();
+  return res.status(201).json({ message:"user created done" , user:loggedInUser, token})
   
 })
 
@@ -50,17 +55,15 @@ const loginUser = asyncHandler(async (req,res)=>{
 
   const passwordVaild = await user.comparePassword(password);
   if (!passwordVaild) {
-    throw new ApiError(401, "password incorrect");
+    throw new ApiError( "password incorrect",401);
   }
-
   const loggedInUser = await User.findById(user._id);
   console.log(loggedInUser.isLoggedIn);
-  
+  const token = loggedInUser.generateAccessToken();
 
 
-  return res
-    .status(200).json(
-       {message:"user login done ",user:loggedInUser}
+  return res.status(200).json(
+       {message:"user login done ",user:loggedInUser,token }
     );
 
 

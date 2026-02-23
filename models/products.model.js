@@ -22,11 +22,14 @@ const productSchema = mongoose.Schema(
     },
     rating: {
       type: Number,
+    },
+    stock: {
+      type: Number,
       required: true,
+      default: 1,
     },
     image: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }

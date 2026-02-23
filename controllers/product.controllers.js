@@ -1,12 +1,33 @@
-import Product from '../models/products.model.js';
+ import Product from '../models/products.model.js';
 
 
 
 // CREATE
 export const createProduct = async (req, res, next) => {
   try {
-    const product = await Product.create(req.body)    
-    res.status(201).json({ success: true, product })
+    const { name, price, stock, category, originalPrice, discount } = req.body;
+
+    // Basic validation
+    if (!name || !price) {
+      return res.status(400).json({
+        success: false,
+        message: "Name and price are required",
+      });
+    }
+
+    const product = await Product.create({
+      name,
+      price,
+      stock,
+      category,
+      discount,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Product created successfully",
+      product,
+    });
   } catch (error) {
     next(error);
   }

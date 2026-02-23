@@ -61,11 +61,11 @@ app.get("/profile", protect, async (req, res) => {
   });
 });
 app.use(express.json({ limit: "10mb" }))
-
-
-
-
-
+app.use(cors({
+  origin: "https://e-commerce-frontend-five-ruby.vercel.app",
+  credentials: true,
+    methods: ['GET','POST','PUT','DELETE'],
+}))
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 

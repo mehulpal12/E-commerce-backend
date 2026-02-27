@@ -17,28 +17,25 @@ const app = express()
 connectDB();
 
 
-const corsOptions = {
-  development: {
-    origin: "http://localhost:3000",
-    credentials: true,
-  },
-  production: {
-    origin: "https://e-commerce-frontend-p693bv72h-mehulpal12s-projects.vercel.app",
-    credentials: true,
-  },
-};
-
-
-const env = process.env.NODE_ENV || corsOptions.development;
-
-// console.log("🌍 Environment:", env);
-// console.log("✅ Allowed CORS origin:", corsOptions[env].origin);
-
 app.use(
   cors({
-    origin: corsOptions[env].origin,
+    origin: function (origin, callback) {
+      // Allow requests without origin (Postman, mobile apps)
+      if (!origin) return callback(null, true);
+
+      // Allow localhost
+      if (origin === "http://localhost:3000") {
+        return callback(null, true);
+      }
+
+      // Allow ANY Vercel deployment (preview + production)
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
-    
   })
 );
 app.get("/test", async (req, res) => {
@@ -73,7 +70,7 @@ app.use("/user/logout", logoutUser)
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, ()=>{
-    console.log("server is run on " + PORT, process.env.MONGO_URI + " and the cors link is "+ corsOptions[env].origin);
+    console.log("server is run on " + PORT, process.env.MONGO_URI );
     
 })
 //  const db = mongoose.connect(process.env.MONGO_URI)

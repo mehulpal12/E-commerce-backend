@@ -1,5 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
+import ApiError from "../utils/apiError.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, userName, email, password, isLoggedIn } = req.body;
@@ -8,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (
     [fullName, userName, email, password].some((field) => field?.trim() === "")
   ) {
-    throw new Error(400, "All fields are required");
+    throw new ApiError(400, "All fields are required");
   }
 
   const existingUser = await User.findOne({
@@ -16,7 +18,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (existingUser) {
-    throw new Error("User with this email or username already exists", 409);
+    throw new ApiError(409, "User with this email or username already exists");
   }
 
   const user = await User.create({
@@ -34,9 +36,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id);
   console.log(loggedInUser.isLoggedIn);
   const token = loggedInUser.generateAccessToken();
-  return res
-    .status(201)
-    .json({ message: "user created done", user: loggedInUser, token });
+  return new ApiResponse(201, "user created done", { user: loggedInUser, token }).send(res);
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -48,7 +48,7 @@ const loginUser = asyncHandler(async (req, res) => {
     $or: [{ userName }, { email }],
   });
   if (!user) {
-    throw new Error(404, "user not exis");
+    throw new ApiError(404, "user not exis");
   }
 
   const passwordVaild = await user.comparePassword(password);
@@ -59,9 +59,7 @@ const loginUser = asyncHandler(async (req, res) => {
   console.log(loggedInUser.isLoggedIn);
   const token = loggedInUser.generateAccessToken();
 
-  return res
-    .status(200)
-    .json({ message: "user login done ", user: loggedInUser, token });
+  return new ApiResponse(200, "user logged in", { user: loggedInUser, token }).send(res);
 });
 
 // logout controller
@@ -71,10 +69,10 @@ const logoutUser = asyncHandler(async (req, res) => {
   const user = await User.findOneAndUpdate({ email }, { isLoggedIn: false });
 
   if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    throw new ApiError(404, "User not found");
   }
 
-  return res.status(200).json({ message: "User logged out successfully" });
+  return new ApiResponse(200, "user logged out", { user }).send(res);
 });
 
 export { registerUser, loginUser, logoutUser };

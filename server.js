@@ -9,6 +9,8 @@ import  handler  from "./api/checkout.js";
 import  uploadImage  from "./api/upload-image.js";
 import  getImages  from "./api/get-images.js";
  import { protect } from "./middleware/authMiddleware.js";
+import userRouter from "./routes/user.route.js";
+
 
 import { connectDB } from "./db.js";
 
@@ -16,26 +18,28 @@ import { connectDB } from "./db.js";
 const app = express()
 connectDB();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://e-commerce-frontend-a94ayaypx-mehulpal12s-projects.vercel.app" // Add specific URL
+];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests without origin (Postman, mobile apps)
       if (!origin) return callback(null, true);
+      
+      const isVercel = origin.endsWith(".vercel.app");
+      const isAllowed = allowedOrigins.includes(origin);
 
-      // Allow localhost
-      if (origin === "http://localhost:3000") {
+      if (isAllowed || isVercel) {
         return callback(null, true);
       }
-
-      // Allow ANY Vercel deployment (preview + production)
-      if (origin.endsWith(".vercel.app")) {
-        return callback(null, true);
-      }
-
+      
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 app.get("/test", async (req, res) => {
@@ -63,10 +67,10 @@ app.get("/", (req,res)=>{
 app.use("/api/products", productRoutes)
 app.use("/api/upload-image", uploadImage)
 app.use("/api/get-images", getImages)
-app.use("/user/register", registerUser)
+
+app.use("/api/v1/users", userRouter);
 app.use("/api/checkout", handler)
-app.use("/user/login", loginUser)
-app.use("/user/logout", logoutUser)
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, ()=>{

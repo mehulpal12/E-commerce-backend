@@ -18,28 +18,31 @@ import { connectDB } from "./db.js";
 const app = express()
 connectDB();
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://e-commerce-frontend-a94ayaypx-mehulpal12s-projects.vercel.app" // Add specific URL
-];
 
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-      
-      const isVercel = origin.endsWith(".vercel.app");
-      const isAllowed = allowedOrigins.includes(origin);
 
-      if (isAllowed || isVercel) {
-        return callback(null, true);
+      try {
+        const { hostname } = new URL(origin);
+
+        // Allow localhost
+        if (hostname === "localhost") {
+          return callback(null, true);
+        }
+
+        // Allow ANY Vercel deployment
+        if (hostname.endsWith(".vercel.app")) {
+          return callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS"));
+      } catch (err) {
+        return callback(new Error("Invalid origin"));
       }
-      
-      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 app.get("/test", async (req, res) => {
